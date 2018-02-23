@@ -1,0 +1,36 @@
+{
+  "name": "ipfsconsortiumcontracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run ganache-cli:dev && truffle test --network rpc",
+    "test:gas": "GAS_REPORTER=true npm test",
+    "lint": "solium --dir ./contracts",
+    "coverage": "node_modules/.bin/solidity-coverage",
+    "ganache-cli:dev": "scripts/ganache-cli.sh",
+    "migrate:dev": "npm run ganache-cli:dev && npm run migrate:dev:contracts",
+    "migrate:dev:contracts": "truffle migrate --all --network rpc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipfsconsortium/IPFSConsortiumContracts.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ipfsconsortium/IPFSConsortiumContracts/issues"
+  },
+  "homepage": "https://github.com/ipfsconsortium/IPFSConsortiumContracts#readme",
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "eth-gas-reporter": "^0.1.1",
+    "ganache-cli": "^6.0.3",
+    "solidity-coverage": "^0.4.9",
+    "solium": "^1.1.5",
+    "truffle": "^4.0.6"
+  }
+}
