@@ -18,11 +18,11 @@ contract IPFSProxy is IPFSEvents, Multimember {
 		_;
 	}
 
-    event ContractAdded(address PubKey, uint ttl);
-    event ContractRemoved(address PubKey);
+    event ContractAdded(address pubKey, uint ttl);
+    event ContractRemoved(address pubKey);
 	event Banned(string IPFSHash);
-	event BanAttempt(address complainer, address _Member, uint complaints );
-	event PersistLimitChanged(uint Limit);	
+	event BanAttempt(address complainer, address member, uint complaints);
+	event PersistLimitChanged(uint limit);	
 
 	/**
 	* @dev Constructor - adds the owner of the contract to the list of valid members
@@ -71,18 +71,18 @@ contract IPFSProxy is IPFSEvents, Multimember {
 	/**
 	*@dev removes a member who exceeds the cap
 	*/
-	function banMember (address _Member, string _evidence) public onlyValidMembers {
-		require(isMember(_Member));
-		require(!complained[msg.sender][_Member]);
-		complained[msg.sender][_Member] = true;
-		complaint[_Member] += 1;	
-		if (complaint[_Member] >= banThreshold) { 
-			removeMember(_Member);
-			if (!isMember(_Member)) {
+	function banMember (address _member, string _evidence) public onlyValidMembers {
+		require(isMember(_member));
+		require(!complained[msg.sender][_member]);
+		complained[msg.sender][_member] = true;
+		complaint[_member] += 1;	
+		if (complaint[_member] >= banThreshold) { 
+			removeMember(_member);
+			if (!isMember(_member)) {
 				Banned(_evidence);
 			} 
 		} else {
-			BanAttempt(msg.sender, _Member, complaint[_Member]);
+			BanAttempt(msg.sender, _member, complaint[_member]);
 		}
 	}
 	/**
