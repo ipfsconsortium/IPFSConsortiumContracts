@@ -1,0 +1,279 @@
+{
+  "contractName": "IPFSEvents",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "pubKey",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "hashAdded",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "ttl",
+          "type": "uint256"
+        }
+      ],
+      "name": "HashAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "pubKey",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "hashRemoved",
+          "type": "string"
+        }
+      ],
+      "name": "HashRemoved",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a723058202444ce81bcf4e1f2f4b9657ed060aa7a8c54a45bf44bba17c78fc0542415d4730029",
+  "deployedBytecode": "0x6060604052600080fd00a165627a7a723058202444ce81bcf4e1f2f4b9657ed060aa7a8c54a45bf44bba17c78fc0542415d4730029",
+  "sourceMap": "27:147:0:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "27:147:0:-;;;;;",
+  "source": "pragma solidity ^0.4.18;\n\n\ncontract IPFSEvents {\n    event HashAdded(address pubKey, string hashAdded, uint ttl);\n    event HashRemoved(address pubKey, string hashRemoved);\n}",
+  "sourcePath": "/Users/sponnet/Documents/projects/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "/Users/sponnet/Documents/projects/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
+      "exportedSymbols": {
+        "IPFSEvents": [
+          16
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".18"
+          ]
+        },
+        "id": 1,
+        "name": "PragmaDirective",
+        "src": "0:24:0"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            16
+          ],
+          "name": "IPFSEvents",
+          "scope": 17
+        },
+        "children": [
+          {
+            "attributes": {
+              "anonymous": false,
+              "name": "HashAdded"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "pubKey",
+                      "scope": 9,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 2,
+                        "name": "ElementaryTypeName",
+                        "src": "69:7:0"
+                      }
+                    ],
+                    "id": 3,
+                    "name": "VariableDeclaration",
+                    "src": "69:14:0"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "hashAdded",
+                      "scope": 9,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "string memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string storage pointer"
+                        },
+                        "id": 4,
+                        "name": "ElementaryTypeName",
+                        "src": "85:6:0"
+                      }
+                    ],
+                    "id": 5,
+                    "name": "VariableDeclaration",
+                    "src": "85:16:0"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "ttl",
+                      "scope": 9,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 6,
+                        "name": "ElementaryTypeName",
+                        "src": "103:4:0"
+                      }
+                    ],
+                    "id": 7,
+                    "name": "VariableDeclaration",
+                    "src": "103:8:0"
+                  }
+                ],
+                "id": 8,
+                "name": "ParameterList",
+                "src": "68:44:0"
+              }
+            ],
+            "id": 9,
+            "name": "EventDefinition",
+            "src": "53:60:0"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "name": "HashRemoved"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "pubKey",
+                      "scope": 15,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 10,
+                        "name": "ElementaryTypeName",
+                        "src": "136:7:0"
+                      }
+                    ],
+                    "id": 11,
+                    "name": "VariableDeclaration",
+                    "src": "136:14:0"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "hashRemoved",
+                      "scope": 15,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "string memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string storage pointer"
+                        },
+                        "id": 12,
+                        "name": "ElementaryTypeName",
+                        "src": "152:6:0"
+                      }
+                    ],
+                    "id": 13,
+                    "name": "VariableDeclaration",
+                    "src": "152:18:0"
+                  }
+                ],
+                "id": 14,
+                "name": "ParameterList",
+                "src": "135:36:0"
+              }
+            ],
+            "id": 15,
+            "name": "EventDefinition",
+            "src": "118:54:0"
+          }
+        ],
+        "id": 16,
+        "name": "ContractDefinition",
+        "src": "27:147:0"
+      }
+    ],
+    "id": 17,
+    "name": "SourceUnit",
+    "src": "0:174:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2018-02-23T12:50:57.295Z"
+}
