@@ -23,7 +23,12 @@ module.exports = {
       port: 8555,
       gas: 0xffffffffff,
       gasPrice: 0x01
-    }
+    },
+    rinkeby: {
+      host: "localhost",
+      port: 8545,
+      network_id: "4"   // Match any network id
+    },
   },
   build: {},
   mocha
