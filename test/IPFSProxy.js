@@ -98,6 +98,19 @@ contract('IPFSProxy', function (accounts) {
     });
   });
 
+  it("change ban threshold", function (done) {
+    IPFSProxy.deployed().then(function (instance) {
+      instance.updateBanThreshold(2, {
+        from: accounts[0]
+      }).then(async function (res) {
+        done();
+      }).catch(function (e) {
+        assert.fail(null, null, 'this function should not throw', e);
+        done();
+      });
+    });
+  });
+
   it("a member account (accounts[1]) should be able to change the changeRequirement value", function (done) {
     IPFSProxy.deployed().then(function (instance) {
       instance.changeRequirement(2, {
@@ -194,19 +207,7 @@ contract('IPFSProxy', function (accounts) {
       });
     });
   });
-
-  it("change ban threshold", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.updateBanThreshold(3, {
-        from: accounts[0]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+  
 
   it("change total persistLimit", function (done) {
     IPFSProxy.deployed().then(function (instance) {
@@ -236,7 +237,7 @@ contract('IPFSProxy', function (accounts) {
 
   it("a member (accounts[1]) should be able to remove a contract", function (done) {
     IPFSProxy.deployed().then(function (instance) {
-      instance.removeContract(testContract,testTTL, {
+      instance.removeContract(testContract, {
         from: accounts[1]
       }).then(function (res) {
         assert.fail(null, null, 'this function should not throw', e);

@@ -1,5 +1,6 @@
 pragma solidity ^0.4.11;
 
+
 contract Multimember {
 
     // TYPES
@@ -89,9 +90,9 @@ contract Multimember {
             return;
 
         clearPending();
-        if (m_numMembers >= c_maxMembers)
+        if (m_numMembers >= MAXMEMBERS)
             reorganizeMembers();
-        if (m_numMembers >= c_maxMembers)
+        if (m_numMembers >= MAXMEMBERS)
             return;
         m_numMembers++;
         m_members[m_numMembers] = uint(_member);
@@ -214,7 +215,7 @@ contract Multimember {
     
     // list of members
     uint[256] m_members;
-    uint constant c_maxMembers = 250;
+    uint constant MAXMEMBERS = 250;
     // index on the list of members to allow reverse lookup
     mapping(uint => uint) m_memberIndex;
     // the ongoing operations.
