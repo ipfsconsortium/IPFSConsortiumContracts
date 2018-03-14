@@ -63,9 +63,8 @@ contract IPFSProxy is IPFSEvents, Multimember {
     }
 
     /** 
-    * Add a contract to watch list. Each node will then 
-    * watch it for `HashAdded(msg.sender,ipfsHash,ttlv);` 
-    * events and it will cache these events
+    * Add a metadata of a contract to watch list. Each node will then 
+    * read the ipfs hash file with the metadata about the contract 
     */
     function metadataContractAdded(string _metadataHash) public onlyValidMembers {
         MetadataContractAdded(msg.sender, _metadataHash);
