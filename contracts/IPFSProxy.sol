@@ -20,8 +20,9 @@ contract IPFSProxy is IPFSEvents, Multimember {
         _;
     }
 
-    event ContractAdded(address pubKey, uint ttl);
-    event ContractRemoved(address pubKey);
+    event ContractAdded(address owner, address pubKey, uint ttl);
+    event MetadataContractAdded(address owner, string metadataHash);
+    event ContractRemoved(address owner, address pubKey);
     event Banned(string consoritumHash);
     event BanAttempt(address complainer, address member, uint complaints);
     event PersistLimitChanged(uint limit);	
@@ -58,14 +59,23 @@ contract IPFSProxy is IPFSEvents, Multimember {
     * events and it will cache these events
     */
     function addContract(address toWatch, uint ttl) public onlyValidMembers {
-        ContractAdded(toWatch, ttl);
+        ContractAdded(msg.sender, toWatch, ttl);
+    }
+
+    /** 
+    * Add a contract to watch list. Each node will then 
+    * watch it for `HashAdded(msg.sender,ipfsHash,ttlv);` 
+    * events and it will cache these events
+    */
+    function metadataContractAdded(string _metadataHash) public onlyValidMembers {
+        MetadataContractAdded(msg.sender, _metadataHash);
     }
 
     /**
     * @dev Remove contract from watch list
     */
     function removeContract(address contractAddress) public onlyValidMembers {
-        ContractRemoved(contractAddress);
+        ContractRemoved(msg.sender,contractAddress);
     }
 
     /**
