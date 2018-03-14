@@ -22,7 +22,7 @@ contract IPFSProxy is IPFSEvents, Multimember {
 
     event ContractAdded(address member, address pubKey, uint ttl);
     event MetadataContractAdded(address member, string metadataHash);
-    event ContractRemoved(address owner, address pubKey);
+    event ContractRemoved(address member, address pubKey);
     event Banned(string consoritumHash);
     event BanAttempt(address complainer, address member, uint complaints);
     event PersistLimitChanged(uint limit);	
