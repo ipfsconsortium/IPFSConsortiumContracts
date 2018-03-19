@@ -41,14 +41,14 @@
       "type": "event"
     }
   ],
-  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a723058205d4a504313b71ddee2463e7fe22fd41576175dd4ee422e688ec7320c246a7b160029",
-  "deployedBytecode": "0x6060604052600080fd00a165627a7a723058205d4a504313b71ddee2463e7fe22fd41576175dd4ee422e688ec7320c246a7b160029",
+  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a723058202444ce81bcf4e1f2f4b9657ed060aa7a8c54a45bf44bba17c78fc0542415d4730029",
+  "deployedBytecode": "0x6060604052600080fd00a165627a7a723058202444ce81bcf4e1f2f4b9657ed060aa7a8c54a45bf44bba17c78fc0542415d4730029",
   "sourceMap": "27:147:0:-;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "27:147:0:-;;;;;",
   "source": "pragma solidity ^0.4.18;\n\n\ncontract IPFSEvents {\n    event HashAdded(address pubKey, string hashAdded, uint ttl);\n    event HashRemoved(address pubKey, string hashRemoved);\n}",
-  "sourcePath": "/Users/edu/IPFSConsortium/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
+  "sourcePath": "/Users/sponnet/Documents/projects/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
   "ast": {
-    "absolutePath": "/Users/edu/IPFSConsortium/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
+    "absolutePath": "/Users/sponnet/Documents/projects/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
     "exportedSymbols": {
       "IPFSEvents": [
         16
@@ -252,7 +252,7 @@
     "src": "0:174:0"
   },
   "legacyAST": {
-    "absolutePath": "/Users/edu/IPFSConsortium/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
+    "absolutePath": "/Users/sponnet/Documents/projects/IPFSConsortiumContracts/contracts/IPFSEvents.sol",
     "exportedSymbols": {
       "IPFSEvents": [
         16
@@ -461,5 +461,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-15T18:01:23.951Z"
+  "updatedAt": "2018-03-19T08:51:10.907Z"
 }
