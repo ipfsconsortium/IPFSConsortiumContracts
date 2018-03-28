@@ -76,6 +76,7 @@ contract IPFSProxy is IPFSEvents, Multimember {
     * read the ipfs hash file with the metadata about the contract 
     */
     function metadataContractAdded(string _metadataHash) public onlyValidMembers {
+        HashAdded(msg.sender,_metadataHash,0);
         MetadataContractAdded(msg.sender, _metadataHash);
     }
 
@@ -83,6 +84,7 @@ contract IPFSProxy is IPFSEvents, Multimember {
     * removed a metadata of a contract to watch list.
     */
     function metadataContractRemoved(string _metadataHash) public onlyValidMembers {
+        HashRemoved(msg.sender,_metadataHash);
         MetadataContractRemoved(msg.sender, _metadataHash);
     }
 
