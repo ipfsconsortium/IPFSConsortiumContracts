@@ -1,124 +1,60 @@
-pragma solidity ^0.4.11;
-
+pragma solidity ^0.4.19;
 
 import "./IPFSEvents.sol";
 import "./Multimember.sol";
 
-
 contract IPFSProxy is IPFSEvents, Multimember {
-    mapping(address => mapping( address => bool)) public complained;
-    mapping(address => uint) public complaint;
-    uint public banThreshold;
-    uint public sizeLimit;
-    address[] members;
-    
-    /**
-    * @dev Throws if called by any account other than a valid member. 
-    */
-    modifier onlyValidMembers {
-        require (isMember(msg.sender));
-        _;
-    }
+    uint public persistLimit;
 
-    event ContractAdded(address member, address pubKey, uint ttl);
-    event ContractRemoved(address member, address pubKey);
-    event MetadataContractAdded(address member, string metadataHash);
-    event MetadataContractRemoved(address member, string metadataHash);
-    event Banned(string consoritumHash);
-    event BanAttempt(address complainer, address member, uint complaints);
     event PersistLimitChanged(uint limit);	
 
     /**
     * @dev Constructor - adds the owner of the contract to the list of valid members
     */
-    function IPFSProxy() Multimember (members, 1) public {
-        addContract(this, 0);
-        updateBanThreshold(1);
-        setTotalPersistLimit(10000000000); //10 GB
+    function IPFSProxy(address[] _members,uint _required, uint _persistlimit) Multimember (_members, _required) public {
+        setTotalPersistLimit(_persistlimit);
     }
 
     /**
     * @dev Add hash to persistent storage
-    * @param ipfsHash The ipfs hash to propagate.
-    * @param ttl amount of time is seconds to persist this. 
+    * @param _ipfsHash The ipfs hash to propagate.
+    * @param _ttl amount of time is seconds to persist this. 0 = infinite
     */
-    function addHash(string ipfsHash, uint ttl) public onlyValidMembers {
-        HashAdded(msg.sender,ipfsHash,ttl);
+    function addHash(string _ipfsHash, uint _ttl) public onlymember {
+        HashAdded(_ipfsHash,_ttl);
     }
 
     /**
     * @dev Remove hash from persistent storage
-    * @param ipfsHash The ipfs hash to propagate.	
+    * @param _ipfsHash The ipfs hash to propagate.	
     */
-    function removeHash(string ipfsHash) public onlyValidMembers {
-        HashRemoved(msg.sender,ipfsHash);
-    }
-
-    /** 
-    * Add a contract to watch list. Each node will then 
-    * watch it for `HashAdded(msg.sender,ipfsHash,ttlv);` 
-    * events and it will cache these events
-    */
-    function addContract(address toWatch, uint ttl) public onlyValidMembers {
-        ContractAdded(msg.sender, toWatch, ttl);
-    }
-
-    /**
-    * @dev Remove contract from watch list
-    */
-    function removeContract(address contractAddress) public onlyValidMembers {
-        require(contractAddress != address(this));
-        ContractRemoved(msg.sender,contractAddress);
+    function removeHash(string _ipfsHash) public onlymember {
+        HashRemoved(_ipfsHash);
     }
 
    /** 
-    * Add a metadata of a contract to watch list. Each node will then 
-    * read the ipfs hash file with the metadata about the contract 
+    * Add a metadata of an object. Each node will then 
+    * read the ipfs hash file with the metadata about the object and parse it 
     */
-    function metadataContractAdded(string _metadataHash) public onlyValidMembers {
-        HashAdded(msg.sender,_metadataHash,0);
-        MetadataContractAdded(msg.sender, _metadataHash);
+    function addMetadataObject(string _metadataHash) public onlymember {
+        HashAdded(_metadataHash,0);
+        MetadataObjectAdded(_metadataHash);
     }
 
     /** 
-    * removed a metadata of a contract to watch list.
+    * removed a metadata of an object.
     */
-    function metadataContractRemoved(string _metadataHash) public onlyValidMembers {
-        HashRemoved(msg.sender,_metadataHash);
-        MetadataContractRemoved(msg.sender, _metadataHash);
-    }
-
-    /**
-    *@dev removes a member who exceeds the cap
-    */
-    function banMember (address member, string evidence) public onlyValidMembers {
-        require(isMember(member));
-        require(!complained[msg.sender][member]);
-        complained[msg.sender][member] = true;
-        complaint[member] += 1;	
-        if (complaint[member] >= banThreshold) { 
-            removeMember(member);
-            if (!isMember(member)) {
-                Banned(evidence);
-            } 
-        } else {
-            BanAttempt(msg.sender, member, complaint[member]);
-        }
-    }
-
-    /**
-    * @dev update ban threshold
-    */
-    function updateBanThreshold (uint threshold) public onlymanymembers(keccak256(threshold)) {
-        banThreshold = threshold;
+    function removeMetadataObject(string _metadataHash) public onlymember {
+        HashRemoved(_metadataHash);
+        MetadataObjectRemoved(_metadataHash);
     }
 
     /**
     * @dev set total allowed upload
     *
     **/
-    function setTotalPersistLimit (uint limit) public onlymanymembers(keccak256(limit)) {
-        sizeLimit = limit;
-        PersistLimitChanged(limit);
+    function setTotalPersistLimit (uint _limit) public onlymanymembers(keccak256(_limit)) {
+        persistLimit = _limit;
+        PersistLimitChanged(_limit);
     }
 }
