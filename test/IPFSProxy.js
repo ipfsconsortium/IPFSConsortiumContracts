@@ -90,7 +90,7 @@ contract('IPFSProxy', function(accounts) {
 
 	describe('addContract / removeContract', () => {
 		it("a member should be able to add a new contract to watch", function(done) {
-			IPFSProxyInstance.addContract(testContractAddress, {
+			IPFSProxyInstance.addContract(testContractAddress, 12345, {
 				from: member1
 			}).then(function(res) {
 				done();

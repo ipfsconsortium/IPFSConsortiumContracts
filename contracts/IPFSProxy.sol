@@ -7,7 +7,7 @@ contract IPFSProxy is IPFSEvents, Multimember {
     uint public persistLimit;
 
     event PersistLimitChanged(uint limit);	
-    event ContractAdded(address pubKey);
+    event ContractAdded(address pubKey,uint startBlock);
     event ContractRemoved(address pubKey);
 
     /**
@@ -18,7 +18,7 @@ contract IPFSProxy is IPFSEvents, Multimember {
         for (uint i = 0; i < _members.length; ++i) {
             MemberAdded(_members[i]);
         }
-        addContract(this);
+        addContract(this,block.number);
     }
 
     /**
@@ -42,9 +42,11 @@ contract IPFSProxy is IPFSEvents, Multimember {
     * Add a contract to watch list. Each proxy will then 
     * watch it for HashAdded and HashRemoved events 
     * and cache these events
+    * @param _contractAddress The contract address.
+    * @param _startBlock The startblock where to look for events.
     */
-    function addContract(address _contractAddress) public onlymember {
-        ContractAdded(_contractAddress);
+    function addContract(address _contractAddress,uint _startBlock) public onlymember {
+        ContractAdded(_contractAddress,_startBlock);
     }
 
     /**
