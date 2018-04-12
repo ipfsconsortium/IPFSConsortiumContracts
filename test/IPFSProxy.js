@@ -119,7 +119,6 @@ contract('IPFSProxy', function(accounts) {
       }).catch(function(e) {
         done();
       });
-
     });
 
     it("a member account should be able to delete a hash", function(done) {
@@ -142,13 +141,11 @@ contract('IPFSProxy', function(accounts) {
       }).catch(function(e) {
         done();
       });
-
     });
   });
 
 	describe('Persist limit changes', () => {
 		it("change total persistLimit", function(done) {
-			//IPFSProxy.deployed().then(function(instance) {
 			IPFSProxyInstance.setTotalPersistLimit(10000000, {
 				from: member1
 			}).then(function(res) {
@@ -157,59 +154,7 @@ contract('IPFSProxy', function(accounts) {
 				assert.fail(null, null, 'this function should not throw', e);
 				done();
 			});
-			//});
 		});
 	});
 
-	// it("a member (accounts[0]) should be able to add a contract", function(done) {
-	// 	IPFSProxy.deployed().then(function(instance) {
-	// 		instance.addMetadataContract(testContract, testTTL, {
-	// 			from: accounts[0]
-	// 		}).then(function(res) {
-	// 			done();
-	// 		}).catch(function(e) {
-	// 			assert.fail(null, null, 'this function should not throw', e);
-	// 			done();
-	// 		});
-	// 	});
-	// });
-
-	// it("a member (accounts[1]) should be able to remove a contract", function(done) {
-	// 	IPFSProxy.deployed().then(function(instance) {
-	// 		instance.removeContract(testContract, {
-	// 			from: accounts[1]
-	// 		}).then(function(res) {
-	// 			assert.fail(null, null, 'this function should not throw', e);
-	// 			done();
-	// 		}).catch(function(e) {
-	// 			done();
-	// 		});
-	// 	});
-	// });
-
-	// it("a non-member (accounts[2]) should be NOT able to add a contract", function(done) {
-	// 	IPFSProxy.deployed().then(function(instance) {
-	// 		instance.addContract(testContract, testTTL, {
-	// 			from: accounts[2]
-	// 		}).then(function(res) {
-	// 			assert.fail(null, null, 'this function should not throw', e);
-	// 			done();
-	// 		}).catch(function(e) {
-	// 			done();
-	// 		});
-	// 	});
-	// });
-
-	// it("a non-member (accounts[2]) should be NOT able to remove a contract", function(done) {
-	// 	IPFSProxy.deployed().then(function(instance) {
-	// 		instance.removeContract(testContract, testTTL, {
-	// 			from: accounts[2]
-	// 		}).then(function(res) {
-	// 			assert.fail(null, null, 'this function should not throw', e);
-	// 			done();
-	// 		}).catch(function(e) {
-	// 			done();
-	// 		});
-	// 	});
-	// });
 });
