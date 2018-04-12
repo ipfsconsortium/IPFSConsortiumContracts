@@ -11,6 +11,7 @@
     "test:gas": "GAS_REPORTER=true npm test",
     "lint": "solium --dir ./contracts",
     "coverage": "node_modules/.bin/solidity-coverage",
+    "flatten": "truffle-flattener contracts/IPFSProxy.sol > contracts/IPFSProxy-flat.sol",
     "ganache-cli:dev": "scripts/ganache-cli.sh",
     "migrate:dev": "npm run ganache-cli:dev && npm run migrate:dev:contracts",
     "migrate:dev:contracts": "truffle migrate --all --network rpc"
@@ -31,6 +32,7 @@
     "ganache-cli": "^6.0.3",
     "solidity-coverage": "^0.4.9",
     "solium": "^1.1.5",
-    "truffle": "^4.0.6"
+    "truffle": "^4.0.6",
+    "truffle-flattener": "^1.2.5"
   }
 }

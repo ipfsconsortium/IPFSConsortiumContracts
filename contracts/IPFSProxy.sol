@@ -7,12 +7,18 @@ contract IPFSProxy is IPFSEvents, Multimember {
     uint public persistLimit;
 
     event PersistLimitChanged(uint limit);	
+    event ContractAdded(address pubKey);
+    event ContractRemoved(address pubKey);
 
     /**
     * @dev Constructor - adds the owner of the contract to the list of valid members
     */
     function IPFSProxy(address[] _members,uint _required, uint _persistlimit) Multimember (_members, _required) public {
         setTotalPersistLimit(_persistlimit);
+        for (uint i = 0; i < _members.length; ++i) {
+            MemberAdded(_members[i]);
+        }
+        addContract(this);
     }
 
     /**
@@ -33,7 +39,24 @@ contract IPFSProxy is IPFSEvents, Multimember {
     }
 
    /** 
-    * Add a metadata of an object. Each node will then 
+    * Add a contract to watch list. Each proxy will then 
+    * watch it for HashAdded and HashRemoved events 
+    * and cache these events
+    */
+    function addContract(address _contractAddress) public onlymember {
+        ContractAdded(_contractAddress);
+    }
+
+    /**
+    * @dev Remove contract from watch list
+    */
+    function removeContract(address _contractAddress) public onlymember {
+        require(_contractAddress != address(this));
+        ContractRemoved(_contractAddress);
+    }
+
+   /** 
+    * Add a metadata of an object. Each proxy will then 
     * read the ipfs hash file with the metadata about the object and parse it 
     */
     function addMetadataObject(string _metadataHash) public onlymember {
