@@ -1,276 +1,186 @@
-var IPFSProxy = artifacts.require("IPFSProxy");
+const IPFSProxy = artifacts.require("IPFSProxy");
+const testHash = 'QmX835j2Sgep7S3ru7nEcLdzpBZ3UqPenxXT9cUqN5RwJW';
+const testMetaDataContract = 'QmTXUwTJtrUPAT3DppvHd5dvzRNzJPqwWQg6iWxvHhMuxX';
+const testContractAddress = '0xb9AeE4A259667FA527ab6787f282aDc20687a008';
+const testTTL = 100;
+let IPFSProxyInstance;
 
-var testHash = 'QmTXUwTJtrUPAT3DppvHd5dvzRNzJPqwWQg6iWxvHhMuxX';
-var testContract = '0x7433c7c768be4025ab791fb7b2942c3d9e309f3e'
-var testTTL = 100;
+contract('IPFSProxy', function(accounts) {
 
-contract('IPFSProxy', function (accounts) {
-  it("a member should be able to add a hash", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
+	const member1 = accounts[1];
+	const member2 = accounts[2];
+	const member3 = accounts[3];
 
-      var events = instance.HashAdded({
-        fromBlock: "latest"
-      });
-      var listener = events.watch(function (error, result) {
-        listener.stopWatching();
-        if (error == null && result.args) {
-          assert.equal(result.args.pubKey, accounts[0]);
-          assert.equal(result.args.hashAdded, testHash);
-          assert.equal(result.args.ttl, testTTL);
-          done();
-        } else {
-          asset.fail(error);
-          done();
-        }
-      });
+	const nonMember = accounts[4];
 
-      // test if member can add a hash
-      instance.addHash(testHash, testTTL, {
-        from: accounts[0]
-      });
-    }).then(function () {
-    });
-  });
+	describe('Deploy', () => {
+		it("should deploy a consortium", function(done) {
+			IPFSProxy.new([
+				member1,
+				member2,
+				member3,
+			], 2, 10e6, {
+				from: accounts[0]
+			}).then((_instance) => {
+				assert.ok(_instance.address);
+				IPFSProxyInstance = _instance;
+				done();
+			});
+		});
+	});
 
-  it("a non-member account (accounts[1]) should NOT be able to add a hash", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.addHash(testHash, testTTL, {
-        from: accounts[1]
-      }).then(function (res) {
-        assert.fail(null, null, 'this function should throw', e);
-        done();
-      }).catch(function (e) {
-        done();
-      });
-    });
-  });
+	describe('adding / removing hashes', () => {
+		it("a member should be able to add a hash", function(done) {
+			var events = IPFSProxyInstance.HashAdded({
+				fromBlock: "latest"
+			});
+			var listener = events.watch(function(error, result) {
+				listener.stopWatching();
+				if (error == null && result.args) {
+					//assert.equal(result.args.pubKey, accounts[0]);
+					assert.equal(result.args.hash, testHash);
+					assert.equal(result.args.ttl, testTTL);
+					done();
+				} else {
+					asset.fail(error);
+					done();
+				}
+			});
+			// test if member can add a hash
+			IPFSProxyInstance.addHash(testHash, testTTL, {
+				from: member1
+			});
+		});
 
-  it("a member account (accounts[0]) should be able to delete a hash", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.removeHash(testHash, {
-        from: accounts[0]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should throw', e);
-        done();
-      });
-    });
-  });
+		it("a non-member account should NOT be able to add a hash", function(done) {
+			IPFSProxyInstance.addHash(testHash, testTTL, {
+				from: nonMember
+			}).then(function(res) {
+				assert.fail(null, null, 'this function should throw', e);
+				done();
+			}).catch(function(e) {
+				done();
+			});
+		});
 
-  it("a member account (accounts[1]) should NOT be able to delete a hash", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.removeHash(testHash, {
-        from: accounts[1]
-      }).then(function (res) {
-        assert.fail(null, null, 'this function should throw', e);
-        done();
-      }).catch(function (e) {
-        done();
-      });
-    });
-  });
+		it("a member account should be able to delete a hash", function(done) {
+			IPFSProxyInstance.removeHash(testHash, {
+				from: member1
+			}).then(function(res) {
+				done();
+			}).catch(function(e) {
+				assert.fail(null, null, 'this function should throw', e);
+				done();
+			});
+		});
 
-  it("a member should be able to add a member (accounts[1])", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.addMember(accounts[1], {
-        from: accounts[0]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should throw');
-        done();
-      });
-    });
-  });
+		it("a non-member account should NOT be able to delete a hash", function(done) {
+			IPFSProxyInstance.removeHash(testHash, {
+				from: nonMember
+			}).then(function(res) {
+				assert.fail(null, null, 'this function should throw', e);
+				done();
+			}).catch(function(e) {
+				done();
+			});
+
+		});
+	});
 
 
-  it("a member account (accounts[1]) should now be able to add a hash", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.addHash(testHash, testTTL, {
-        from: accounts[1]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+	describe('addContract / removeContract', () => {
+		it("a member should be able to add a new contract to watch", function(done) {
+			IPFSProxyInstance.addContract(testContractAddress, 12345, {
+				from: member1
+			}).then(function(res) {
+				done();
+			}).catch(function(e) {
+				assert.fail(null, null, 'this function should not throw', e);
+				done();
+			});
+		});
 
-  it("change ban threshold", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.updateBanThreshold(2, {
-        from: accounts[0]
-      }).then(async function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+		it("a member should be able to remove a contract to watch", function(done) {
+			IPFSProxyInstance.removeContract(testContractAddress, {
+				from: member1
+			}).then(function(res) {
+				done();
+			}).catch(function(e) {
+				assert.fail(null, null, 'this function should not throw', e);
+				done();
+			});
+		});
 
-  it("a member account (accounts[1]) should be able to change the changeRequirement value", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.changeRequirement(2, {
-        from: accounts[1]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+	});
 
-  it("a new member need changeRequirement Confirmation before be a member and add a hash", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.addMember(accounts[2], {
-        from: accounts[0]
-      }).then(function (res) {
-        IPFSProxy.deployed().then(function (instance) {
-          instance.addHash(testHash, testTTL, {
-            from: accounts[2]
-          }).then(function (res) {
-            done();
-            assert.fail(null, null, 'this function should not throw', e);
-          }).catch(function (e) {
-            IPFSProxy.deployed().then(function (instance) {
-              instance.addMember(accounts[2], {
-                from: accounts[1]
-              }).then(function (res) {
-                IPFSProxy.deployed().then(function (instance) {
-                  instance.addHash(testHash, testTTL, {
-                    from: accounts[2]
-                  }).then(function (res) {
-                    done();
-                  }).catch(function (e) {
-                    assert.fail(null, null, 'this function should not throw', e);
-                    done();
-                  });
-                });
-              }).catch(function (e) {
-                assert.fail(null, null, 'this function should throw');
-                done();
-              });
-            });
-          });
-        });
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should throw');
-        done();
-      });
-    });
-  });
+	describe('addMetadataObject / removeMetadataObject', () => {
+		it("a member should be able to add a hash", function(done) {
+			var events = IPFSProxyInstance.MetadataObjectAdded({
+				fromBlock: "latest"
+			});
+			var listener = events.watch(function(error, result) {
+				listener.stopWatching();
+				if (error == null && result.args) {
+					//assert.equal(result.args.pubKey, accounts[0]);
+					assert.equal(result.args.hash, testMetaDataContract);
+					//assert.equal(result.args.ttl, testTTL);
+					done();
+				} else {
+					asset.fail(error);
+					done();
+				}
+			});
+			// test if member can add a hash
+			IPFSProxyInstance.addMetadataObject(testMetaDataContract, {
+				from: member1
+			});
+		});
 
-  it("ban a cheating user, could add a HASH", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.banMember(accounts[2], "", {
-        from: accounts[1]
-      }).then(function (res) {
-        IPFSProxy.deployed().then(function (instance) {
-          instance.addHash(testHash, testTTL, {
-            from: accounts[2]
-          }).then(function (res) {
-            done();
-          }).catch(function (e) {
-            assert.fail(null, null, 'this function should not throw', e);
-            done();
-          });
-        });
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+		it("a non-member account should NOT be able to add a hash", function(done) {
+			IPFSProxyInstance.addMetadataObject(testMetaDataContract, {
+				from: nonMember
+			}).then(function(res) {
+				assert.fail(null, null, 'this function should throw', e);
+				done();
+			}).catch(function(e) {
+				done();
+			});
+		});
 
-  it("after {changeRequirement} confirmations of ban a cheating user and overcome the threshold the user must be deleted, NOT be able to add HASH", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.banMember(accounts[2], "", {
-        from: accounts[0]
-      }).then(function (res) {
-        IPFSProxy.deployed().then(function (instance) {
-          instance.addHash(testHash, testTTL, {
-            from: accounts[2]
-          }).then(function (res) {
-            assert.fail(null, null, 'this function should not throw', e);
-            done();
-          }).catch(function (e) {
-            done();
-          });
-        });
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
-  
+		it("a member account should be able to delete a hash", function(done) {
+			IPFSProxyInstance.removeMetadataObject(testMetaDataContract, {
+				from: member1
+			}).then(function(res) {
+				done();
+			}).catch(function(e) {
+				assert.fail(null, null, 'this function should throw', e);
+				done();
+			});
+		});
 
-  it("change total persistLimit", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.setTotalPersistLimit(10000000, {
-        from: accounts[0]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+		it("a non-member account should NOT be able to delete a hash", function(done) {
+			IPFSProxyInstance.removeMetadataObject(testMetaDataContract, {
+				from: nonMember
+			}).then(function(res) {
+				assert.fail(null, null, 'this function should throw', e);
+				done();
+			}).catch(function(e) {
+				done();
+			});
+		});
+	});
 
-  it("a member (accounts[0]) should be able to add a contract", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.addContract(testContract,testTTL, {
-        from: accounts[0]
-      }).then(function (res) {
-        done();
-      }).catch(function (e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
-  });
+	describe('Persist limit changes', () => {
+		it("change total persistLimit", function(done) {
+			IPFSProxyInstance.setTotalPersistLimit(10000000, {
+				from: member1
+			}).then(function(res) {
+				done();
+			}).catch(function(e) {
+				assert.fail(null, null, 'this function should not throw', e);
+				done();
+			});
+		});
+	});
 
-  it("a member (accounts[1]) should be able to remove a contract", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.removeContract(testContract, {
-        from: accounts[1]
-      }).then(function (res) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      }).catch(function (e) {
-        done();
-      });
-    });
-  });
-
-  it("a non-member (accounts[2]) should be NOT able to add a contract", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.addContract(testContract,testTTL, {
-        from: accounts[2]
-      }).then(function (res) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      }).catch(function (e) {
-        done();
-      });
-    });
-  });
-
-  it("a non-member (accounts[2]) should be NOT able to remove a contract", function (done) {
-    IPFSProxy.deployed().then(function (instance) {
-      instance.removeContract(testContract,testTTL, {
-        from: accounts[2]
-      }).then(function (res) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      }).catch(function (e) {
-        done();
-      });
-    });
-  });
 });
