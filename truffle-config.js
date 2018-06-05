@@ -1,35 +1,52 @@
-const mochaGasSettings = {
-  reporter: 'eth-gas-reporter',
-  reporterOptions : {
-    currency: 'USD',
-    gasPrice: 20
+const PrivateKeyProvider = require("truffle-privatekey-provider");
+const fs = require('fs');
+const path = require('path');
+const ownerfilename = path.join(__dirname, 'scripts/owner.json');
+
+function getNetworks() {
+  var ownerAccount = null;
+  if (fs.existsSync(ownerfilename)) {
+    ownerAccount = require(ownerfilename);
   }
-}
-
-const mocha = process.env.GAS_REPORTER ? mochaGasSettings : {}
-
-
-module.exports = {
-  networks: {
-    rpc: {
-      network_id: 15,
-      host: 'localhost',
-      port: 8111,
-      gas: 6.9e6,
-    },
-    coverage: {
-      host: "localhost",
-      network_id: "*",
-      port: 8555,
-      gas: 0xffffffffff,
-      gasPrice: 0x01
-    },
-    rinkeby: {
+  if (!ownerAccount){
+    console.error('please run scripts/mkaccounts.sh to create a set of keys for all actors of the bridge');
+    console.error('No owner account found. Bailing out');
+    process.exit();
+  }
+  const networks = {
+    development: {
       host: "localhost",
       port: 8545,
-      network_id: "4"   // Match any network id
+      network_id: "*" // Match any network id
     },
-  },
-  build: {},
-  mocha
+    ropsten: {
+      provider: ownerAccount ? new PrivateKeyProvider(ownerAccount.private, "https://ropsten.infura.io/U8U4n8mm2wDgB2e3Dksv") : null,
+      network_id: 3,
+      //gas: 1828127,
+      //myvar: 123,
+    },
+    mainnet: {
+      provider: ownerAccount ? new PrivateKeyProvider(ownerAccount.private, "https://mainnet.infura.io/U8U4n8mm2wDgB2e3Dksv") : null,
+      network_id: 1,
+      //gas: 1828127,
+    },
+      coverage: {
+        host: "localhost",
+        network_id: "*",
+        port: 8555,         // <-- If you change this, also set the port option in .solcover.js.
+        gas: 0xfffffffffff, // <-- Use this high gas value
+        gasPrice: 0x01      // <-- Use this low gas price
+      },
+  };
+  return(networks);
 }
+
+module.exports = {
+  networks: getNetworks(),
+  solc: {
+    optimizer: {
+      enabled: true,
+      runs: 200
+    }
+  },
+};

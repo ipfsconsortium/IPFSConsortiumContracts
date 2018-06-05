@@ -29,10 +29,15 @@
   "devDependencies": {
     "coveralls": "^3.0.0",
     "eth-gas-reporter": "^0.1.1",
+    "ethereumjs-util": "^5.2.0",
     "ganache-cli": "^6.0.3",
+    "ipfs-api": "git+https://github.com/sponnet/js-ipfs-api.git",
+    "ipfsconsortiumdata": "git+https://github.com/ipfsconsortium/IPFSConsortiumData.git",
+    "keythereum": "^1.0.4",
     "solidity-coverage": "^0.4.9",
     "solium": "^1.1.5",
     "truffle": "^4.0.6",
-    "truffle-flattener": "^1.2.5"
+    "truffle-flattener": "^1.2.5",
+    "truffle-privatekey-provider": "^0.1.0"
   }
 }
